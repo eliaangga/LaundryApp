@@ -177,7 +177,7 @@ class _CreateOrderState extends State<CreateOrder> {
                       ),
                       child: Row(
                         children: [
-                          const SizedBox(width: 16),
+                          const SizedBox(width: 12),
                           Expanded(
                             child: DropdownButtonFormField<String>(
                               decoration: const InputDecoration(

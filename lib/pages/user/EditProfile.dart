@@ -11,8 +11,19 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  bool isObscurePassword = true;
+// variable untuk menyimpan data dari database nanti
 
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController numberController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+
+  bool isObscurePassword = true;
+  bool isObscureConfirmPassword = true;
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,8 +36,8 @@ class _EditProfileState extends State<EditProfile> {
             color: Colors.white,
           ),
           onPressed: () {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      CreateOrder.id, (route) => false);        
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              CreateOrder.id, (route) => false);        
           },
         ),
       ),
@@ -41,13 +52,52 @@ class _EditProfileState extends State<EditProfile> {
               Expanded(
                 child: ListView(
                   children: [
-                    const SizedBox(height: 20),
-                    buildTextField("Full Name", "Nama User", false),
-                    buildTextField("Username", "Username", false),
-                    buildTextField("Email", "user@gmail.com", false),
-                    buildTextField("Nomor Seluler", "", false),
-                    buildTextField("Password", "", true),
-                    buildTextField("Ulangi Password", "", true),
+                    buildTextField("Username", "Username", false, usernameController, enabled: false),
+                    buildTextField("Email", "user@gmail.com", false, emailController, enabled: false),
+                    buildTextField("Nomor Seluler", "088002280629", false, numberController, enabled: false),
+                    buildTextField("Nama Lengkap", "", false, nameController, ),
+                    buildMultilineTextField("Alamat", "", addressController),
+                    TextButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Change Password'),
+                              content: SingleChildScrollView(
+                                child: ListBody(
+                                  children: <Widget>[
+                                    buildTextField("New Password", "", true, passwordController),
+                                    buildTextField("Confirm Password", "", true, confirmPasswordController),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text('Cancel'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text('Save'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }, 
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Ubah Password', 
+                          style: TextStyle(decoration: TextDecoration.underline),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -56,7 +106,8 @@ class _EditProfileState extends State<EditProfile> {
                 children: [
                   OutlinedButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                      CreateOrder.id, (route) => false);        
                     },
                     child: const Text(
                       "Cancel",
@@ -73,8 +124,8 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                   ),
                   SizedBox(
-                    width: 200,
-                    height: 50,
+                    width: 150,
+                    height: 35,
                     child: ElevatedButton(
                       onPressed: (){},
                       child: Text("Save", style: TextStyle(
@@ -97,36 +148,64 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  Widget buildTextField(String labelText, String placeholder, bool isPasswordTextField) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 30),
-      child: TextField(
-        style: TextStyle(color: Colors.grey,),
-        obscureText: isPasswordTextField ? isObscurePassword : false,
-        decoration: InputDecoration(
-          suffixIcon: isPasswordTextField
-              ? IconButton(
-                  icon: Icon(
-                    isObscurePassword ? Icons.visibility : Icons.visibility_off,
-                    color: Colors.grey,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isObscurePassword = !isObscurePassword;
-                    });
-                  })
-              : null,
-          contentPadding: const EdgeInsets.only(bottom: 5, left:  10),
-          labelText: labelText,
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          hintText: placeholder,
-          hintStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.grey,
-          ),
+Widget buildTextField(String labelText, String placeholder, bool isPasswordTextField, TextEditingController controller, {bool enabled = true}) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 30),
+    child: TextField(
+      style: TextStyle(color: Colors.grey,),
+      enabled: enabled,
+      controller: controller,
+      obscureText: isPasswordTextField ? isObscurePassword : false,
+      decoration: InputDecoration(
+        suffixIcon: isPasswordTextField
+          ? IconButton(
+        icon: Icon(
+          isObscurePassword ? Icons.visibility : Icons.visibility_off,
+          color: Colors.grey,
+        ),
+        onPressed: () {
+          isPasswordTextField
+              ? setState(() {
+                  isObscurePassword = !isObscurePassword;
+                })
+              : null;
+        },
+      )
+          : null,
+
+        contentPadding: const EdgeInsets.only(bottom: 5, left:  10),
+        labelText: labelText,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        hintText: placeholder,
+        hintStyle: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.grey,
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+}
+
+Widget buildMultilineTextField(String labelText, String placeholder, TextEditingController controller) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 10),
+    child: TextField(
+      style: TextStyle(color: Colors.grey,),
+      maxLines: 5,
+      controller: controller,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.only(bottom: 5, left:  10),
+        labelText: labelText,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        hintText: placeholder,
+        hintStyle: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.grey,
+        ),
+      ),
+    ),
+  );
 }
