@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_signup/app_style.dart';
 import 'package:flutter_login_signup/pages/signup/signup.dart';
 import 'package:flutter_login_signup/pages/user/CreateOrder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
 
 import '../user/CreateOrder.dart';
 
@@ -16,6 +19,46 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool check = false;
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+void login() async {
+  final String apiUrl = 'http://192.168.18.195/LaundryCI-v2/index.php/ApiCC/login'; // Ganti ip sesuai dengan ip pc anda
+
+  Map<String, dynamic> body = {
+    'username': usernameController.text,
+    'password': passwordController.text,
+  };
+
+  var response = await http.post(Uri.parse(apiUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body));
+
+  if (response.statusCode == 200) {
+    Navigator.pushNamedAndRemoveUntil(context, CreateOrder.id, (route) => false);
+  } else {
+    // Jika login gagal, tampilkan pesan error
+    var data = jsonDecode(response.body);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Login Gagal'),
+          content: Text(data['pesan']),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -36,6 +79,7 @@ class _LoginState extends State<Login> {
                   ),
                 ),                                         
                 TextField(
+                  controller: usernameController,
                   style: const TextStyle(color: kLightTextColor),
                   decoration: InputDecoration(
                     hintText: "Username",
@@ -47,6 +91,7 @@ class _LoginState extends State<Login> {
                 ),
                 SizedBox(height: size.height * 0.016),
                 TextField(
+                  controller: passwordController,
                   obscureText: true,
                   style: const TextStyle(color: kLightTextColor),
                   decoration: InputDecoration(
@@ -87,10 +132,11 @@ class _LoginState extends State<Login> {
                 ),
                 SizedBox(height: size.height * 0.029),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      CreateOrder.id, (route) => false);
-                  },
+                  onPressed: login,
+                  // () {
+                  //   Navigator.of(context).pushNamedAndRemoveUntil(
+                  //     CreateOrder.id, (route) => false);
+                  // },
                   child: Text(
                     "Masuk",
                     style: Theme.of(context).textTheme.titleMedium,
