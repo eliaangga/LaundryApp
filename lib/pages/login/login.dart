@@ -10,6 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 
 import '../user/CreateOrder.dart';
+import '../user/User.dart';
 
 class Login extends StatefulWidget {
   static String id = "/login";
@@ -20,46 +21,70 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool check = false;
+  
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+Future<void> login() async {
+    final String username = usernameController.text;
+    final String password = passwordController.text;
 
-void login() async {
-  final String apiUrl = 'https://candycrushlaundry.000webhostapp.com/ApiCC/login'; // Ganti ip sesuai dengan ip pc anda
+    // Ganti URL_API dengan URL API yang sesuai
+    final String apiUrl = 'https://candycrushlaundry.000webhostapp.com/ApiCC/login';
 
-  Map<String, dynamic> body = {
-    'username': usernameController.text,
-    'password': passwordController.text,
-  };
+    final http.Response response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(<String, String>{
+        'username': username,
+        'password': password,
+      }),
+    );
 
-  var response = await http.post(Uri.parse(apiUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(body));
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      final String? username = data['user']['username'];
+      final String? id = data['user']['id'];
 
-  if (response.statusCode == 200) {
-    Navigator.pushNamedAndRemoveUntil(context, LandingPage.id, (route) => false);
-  } else {
-    // Jika login gagal, tampilkan pesan error
-    var data = jsonDecode(response.body);
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Login Gagal'),
-          content: Text(data['pesan']),
-          actions: <Widget>[
+      if (id != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LandingPage(idUser: id),
+          ),
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Login Failed'),
+            content: Text('Invalid response data.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Login Failed'),
+          content: Text('Invalid username or password.'),
+          actions: [
             TextButton(
+              onPressed: () => Navigator.pop(context),
               child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
             ),
           ],
-        );
-      },
-    );
+        ),
+      );
+    }
   }
-}
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;

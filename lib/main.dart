@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         EditProfile.id: (context) => EditProfile(),
         HistoryOrder.id: (context) => HistoryOrder(),
         TrackOrder.id: (context) => TrackOrder(),
-        LandingPage.id: (context) => LandingPage()
+        LandingPage.id: (context) => LandingPage(idUser: '',)
       },
       home: const Login(),
     );

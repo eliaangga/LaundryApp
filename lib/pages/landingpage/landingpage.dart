@@ -5,11 +5,15 @@ import '../user/CreateOrder.dart';
 import '../user/EditProfile.dart';
 import '../user/HistoryOrder.dart';
 import '../user/TrackOrder.dart';
+import '../user/User.dart';
 
 class LandingPage extends StatefulWidget {
   static String id = "/landingpage";
-  const LandingPage({Key? key}) : super(key: key);
+  final String idUser;
+  final User? loggedInUser;
 
+  const LandingPage({Key? key, this.loggedInUser, required this.idUser}) : super(key: key);
+  
   @override
   _LandingPageState createState() => _LandingPageState();
 }
@@ -103,9 +107,9 @@ class _LandingPageState extends State<LandingPage> {
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: const [
+              children:  [
                 Text(
-                  'User',
+                  widget.idUser,
                   style: TextStyle(color: Colors.white),
                 ),
                 SizedBox(width: 8),
