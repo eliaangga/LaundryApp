@@ -5,11 +5,15 @@ import '../user/CreateOrder.dart';
 import '../user/EditProfile.dart';
 import '../user/HistoryOrder.dart';
 import '../user/TrackOrder.dart';
+import '../user/User.dart';
 
 class LandingPage extends StatefulWidget {
   static String id = "/landingpage";
-  const LandingPage({Key? key}) : super(key: key);
+  final String idUser;
+  final User? loggedInUser;
 
+  const LandingPage({Key? key, this.loggedInUser, required this.idUser}) : super(key: key);
+  
   @override
   _LandingPageState createState() => _LandingPageState();
 }
@@ -103,9 +107,9 @@ class _LandingPageState extends State<LandingPage> {
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: const [
+              children:  [
                 Text(
-                  'User',
+                  widget.idUser,
                   style: TextStyle(color: Colors.white),
                 ),
                 SizedBox(width: 8),
@@ -118,164 +122,205 @@ class _LandingPageState extends State<LandingPage> {
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              Expanded(
-                flex: 2,
-                child: PageView.builder(
-                  itemCount: _imageList.length,
-                  onPageChanged: (index) {
-                    setState(() {
-                      _currentPageIndex = index;
-                    });
-                  },
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(_imageList[index]),
-                          fit: BoxFit.cover,
-                        ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              height: 200.0,
+              child: PageView.builder(
+                itemCount: _imageList.length,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentPageIndex = index;
+                  });
+                },
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(_imageList[index]),
+                        fit: BoxFit.cover,
                       ),
-                      child: Column(
-                        children: const [
-                          SizedBox(height: 15),
-                          Text(
-                            'CandyCrush Laundry',
-                            style: TextStyle(
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Poppins',
-                              color: Color(0xFFFF6464),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            'Cuci kilat harga bersahabat',
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontFamily: 'Poppins',
-                              color: Color(0xFFFF6464),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
-              Expanded(
-                flex: 3,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
+            ),
+            SizedBox(height: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: _buildPageIndicator(),
+            ),
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 10.0),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      'Apps',
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  child: Column(
+                  SizedBox(height: 20.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 5),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: _buildPageIndicator(),
+                      MenuCard(
+                        icon: Icons.add_shopping_cart,
+                        title: 'Buat Pesanan',
+                        onTap: () {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              CreateOrder.id, (route) => false);
+                        },
                       ),
-                      const SizedBox(height: 15),
-                      Expanded(
-                        child: ListView(
-                          scrollDirection:
-                              Axis.vertical, // Set vertical scroll direction
-                          children: [
-                            _buildCard(
-                              context,
-                              image: 'assets/images/laundry1.png',
-                              title: 'Buat Pesanan',
-                              onPressed: () {
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                  CreateOrder.id,
-                                  (route) => false,
-                                );
-                              },
-                            ),
-                            _buildCard(
-                              context,
-                              image: 'assets/images/laundry3.png',
-                              title: 'Lacak Pesanan',
-                              onPressed: () {
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                  TrackOrder.id,
-                                  (route) => false,
-                                );
-                              },
-                            ),
-                            _buildCard(
-                              context,
-                              image: 'assets/images/laundry2.png',
-                              title: 'Riwayat Pesanan',
-                              onPressed: () {
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                  HistoryOrder.id,
-                                  (route) => false,
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                      MenuCard(
+                        icon: Icons.location_on,
+                        title: 'Lacak Pesanan',
+                        onTap: () {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              TrackOrder.id, (route) => false);
+                        },
+                      ),
+                      MenuCard(
+                        icon: Icons.history,
+                        title: 'Riwayat Pesanan',
+                        onTap: () {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              HistoryOrder.id, (route) => false);
+                        },
                       ),
                     ],
                   ),
-                ),
+                  SizedBox(
+                      height:
+                          20.0), // Tambahkan spasi antara menu Apps dan menu Survey
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      MenuCard(
+                        icon: Icons.question_answer,
+                        title: 'Customer Feedback',
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                      height:
+                          40.0), // Tambahkan spasi antara menu Survey dan menu Berita Terbaru
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      'Berita Terbaru',
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      MenuCard(
+                        icon: Icons.article,
+                        title: 'News 1',
+                        onTap: () {
+                          // Navigasi ke halaman News 1
+                        },
+                      ),
+                      MenuCard(
+                        icon: Icons.article,
+                        title: 'News 2',
+                        onTap: () {
+                          // Navigasi ke halaman News 2
+                        },
+                      ),
+                      MenuCard(
+                        icon: Icons.article,
+                        title: 'News 3',
+                        onTap: () {
+                          // Navigasi ke halaman News 3
+                        },
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
   List<Widget> _buildPageIndicator() {
-    List<Widget> list = [];
+    List<Widget> indicators = [];
     for (int i = 0; i < _imageList.length; i++) {
-      list.add(
+      indicators.add(
         i == _currentPageIndex
-            ? const Padding(
-                padding: EdgeInsets.all(5),
-                child: Icon(Icons.circle, size: 12, color: Colors.red),
+            ? Padding(
+                padding: const EdgeInsets.all(5),
+                child: Icon(
+                  Icons.circle,
+                  size: 12,
+                  color: Colors.red,
+                ),
               )
-            : const Padding(
-                padding: EdgeInsets.all(5),
-                child: Icon(Icons.circle, size: 10, color: Colors.grey),
+            : Padding(
+                padding: const EdgeInsets.all(5),
+                child: Icon(
+                  Icons.circle,
+                  size: 10,
+                  color: Colors.grey,
+                ),
               ),
       );
     }
-    return list;
+    return indicators;
   }
+}
 
-  Widget _buildCard(BuildContext context,
-      {required String image,
-      required String title,
-      required Function onPressed}) {
-    return Card(
-      child: InkWell(
-        onTap: () => onPressed(),
-        child: Column(
-          children: [
-            Image.asset(
-              image,
-              width: 150,
-              height: 150,
+class MenuCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+
+  const MenuCard(
+      {required this.icon, required this.title, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Card(
+        elevation: 2.0,
+        child: Container(
+          width: double.infinity,
+          height: 96,
+          child: InkWell(
+            onTap: onTap,
+            child: Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(icon),
+                  SizedBox(height: 10.0),
+                  Text(
+                    title,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 10),
-            Text(title),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () => onPressed(),
-              child: Text('Masuk'),
-            ),
-          ],
+          ),
         ),
       ),
     );

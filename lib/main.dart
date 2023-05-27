@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_login_signup/pages/landingpage/landingpage.dart';
 import 'package:flutter_login_signup/pages/login/login.dart';
 import 'package:flutter_login_signup/pages/signup/signup.dart';
 import 'package:flutter_login_signup/pages/user/CreateOrder.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         EditProfile.id: (context) => EditProfile(),
         HistoryOrder.id: (context) => HistoryOrder(),
         TrackOrder.id: (context) => TrackOrder(),
+        LandingPage.id: (context) => LandingPage(idUser: '',)
       },
       home: const Login(),
     );
