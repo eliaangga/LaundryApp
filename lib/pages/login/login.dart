@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_signup/app_style.dart';
+import 'package:flutter_login_signup/pages/landingpage/landingpage.dart';
 import 'package:flutter_login_signup/pages/signup/signup.dart';
 import 'package:flutter_login_signup/pages/user/CreateOrder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -23,7 +24,7 @@ class _LoginState extends State<Login> {
   TextEditingController passwordController = TextEditingController();
 
 void login() async {
-  final String apiUrl = 'http://192.168.18.195/LaundryCI-v2/index.php/ApiCC/login'; // Ganti ip sesuai dengan ip pc anda
+  final String apiUrl = 'https://candycrushlaundry.000webhostapp.com/ApiCC/login'; // Ganti ip sesuai dengan ip pc anda
 
   Map<String, dynamic> body = {
     'username': usernameController.text,
@@ -35,7 +36,7 @@ void login() async {
       body: jsonEncode(body));
 
   if (response.statusCode == 200) {
-    Navigator.pushNamedAndRemoveUntil(context, CreateOrder.id, (route) => false);
+    Navigator.pushNamedAndRemoveUntil(context, LandingPage.id, (route) => false);
   } else {
     // Jika login gagal, tampilkan pesan error
     var data = jsonDecode(response.body);
