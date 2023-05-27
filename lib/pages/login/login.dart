@@ -23,7 +23,7 @@ class _LoginState extends State<Login> {
   TextEditingController passwordController = TextEditingController();
 
 void login() async {
-  final String apiUrl = 'http://192.168.18.195/LaundryCI-v2/index.php/ApiCC/login'; // Ganti ip sesuai dengan ip pc anda
+  final String apiUrl = 'https://candycrushlaundry.000webhostapp.com/ApiCC/login'; // Ganti ip sesuai dengan ip pc anda
 
   Map<String, dynamic> body = {
     'username': usernameController.text,
