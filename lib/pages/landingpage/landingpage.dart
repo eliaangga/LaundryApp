@@ -41,17 +41,33 @@ class _LandingPageState extends State<LandingPage> {
           ),
           onSelected: (result) {
             if (result == 1) {
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(LandingPage.id, (route) => false);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LandingPage(userData: widget.userData),
+                ),
+              );
             } else if (result == 2) {
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(CreateOrder.id, (route) => false);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CreateOrder(userData: widget.userData),
+                ),
+              );
             } else if (result == 3) {
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(TrackOrder.id, (route) => false);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TrackOrder(userData: widget.userData),
+                ),
+              );
             } else if (result == 4) {
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(HistoryOrder.id, (route) => false);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HistoryOrder(userData: widget.userData),
+                ),
+              );
             }
           },
           icon: const Icon(Icons.menu, color: Colors.white),
@@ -100,7 +116,7 @@ class _LandingPageState extends State<LandingPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => LandingPage(userData: widget.userData),
+                    builder: (context) => EditProfile(userData: widget.userData),
                   ),
                 );
               } else if (value == 5) {
@@ -179,24 +195,36 @@ class _LandingPageState extends State<LandingPage> {
                         icon: Icons.add_shopping_cart,
                         title: 'Buat Pesanan',
                         onTap: () {
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              CreateOrder.id, (route) => false);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CreateOrder(userData: widget.userData),
+                            ),
+                          );
                         },
                       ),
                       MenuCard(
                         icon: Icons.location_on,
                         title: 'Lacak Pesanan',
                         onTap: () {
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              TrackOrder.id, (route) => false);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TrackOrder(userData: widget.userData),
+                            ),
+                          );
                         },
                       ),
                       MenuCard(
                         icon: Icons.history,
                         title: 'Riwayat Pesanan',
                         onTap: () {
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              HistoryOrder.id, (route) => false);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HistoryOrder(userData: widget.userData),
+                            ),
+                          );
                         },
                       ),
                     ],

@@ -6,10 +6,13 @@ import 'package:flutter_login_signup/pages/user/EditProfile.dart';
 import 'package:flutter_login_signup/pages/user/CreateOrder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../app_style.dart';
+import 'User.dart';
 
 class TrackOrder extends StatefulWidget {
   static String id = "/trackorder";
-  const TrackOrder({super.key});
+  final User? userData;
+  
+  const TrackOrder({super.key, required this.userData});
 
   @override
   State<TrackOrder> createState() => _TrackOrderState();
@@ -55,14 +58,26 @@ class _TrackOrderState extends State<TrackOrder> {
         leading: PopupMenuButton(
             onSelected: (result) {
               if (result == 1) {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(CreateOrder.id, (route) => false);
+                Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CreateOrder(userData: widget.userData),
+                ),
+              );
               } else if (result == 2) {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(TrackOrder.id, (route) => false);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TrackOrder(userData: widget.userData),
+                  ),
+                );
               } else if (result == 3) {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(HistoryOrder.id, (route) => false);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HistoryOrder(userData: widget.userData),
+                  ),
+                );
               }
             },
             icon: Icon(Icons.menu, color: Colors.white),
@@ -101,8 +116,12 @@ class _TrackOrderState extends State<TrackOrder> {
                 ],
                 onSelected: (value) {
                   if (value == 4) {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        EditProfile.id, (route) => false);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditProfile(userData: widget.userData),
+                      ),
+                    );
                   } else if (value == 5) {
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil(Login.id, (route) => false);
@@ -112,7 +131,7 @@ class _TrackOrderState extends State<TrackOrder> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      'User',
+                      widget.userData!.username,
                       style: TextStyle(color: Colors.white),
                     ),
                     SizedBox(width: 8),
