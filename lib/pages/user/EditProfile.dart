@@ -4,8 +4,9 @@ import '../user/User.dart';
 
 class EditProfile extends StatefulWidget {
   static const String id = "/editprofile";
+  final User? userData;
   
-  const EditProfile({super.key});
+  const EditProfile({super.key, required  this.userData});
 
   @override
   _EditProfileState createState() => _EditProfileState();
