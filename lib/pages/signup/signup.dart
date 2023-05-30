@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_signup/pages/login/login.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
 
 import '../../app_style.dart';
+import '../landingpage/landingpage.dart';
+import '../user/User.dart';
 
   enum Gender { pria, wanita}
   Gender? _gender;
@@ -17,6 +22,85 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  Gender? genderController = _gender;
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
+  Future<void> register() async {
+    final String username = usernameController.text;
+    final String password = passwordController.text;
+    final String confirmPassword = confirmPasswordController.text;
+    final String name = nameController.text;
+    final String email = emailController.text;
+    final String address = addressController.text;
+    final String gender =
+    genderController == Gender.pria ? "Pria" : "Wanita";
+    final String phoneNumber = phoneNumberController.text;
+    // Ganti URL_API dengan URL API yang sesuai
+    final String apiUrl =
+        'https://candycrushlaundry.000webhostapp.com/ApiCC/register';
+  bool isPasswordMatch() {
+    String password = passwordController.text;
+    String confirmPassword = confirmPasswordController.text;
+    return password == confirmPassword;
+  }
+    if (!isPasswordMatch()) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Registration Failed'),
+          content: Text('Passwords do not match.', style: TextStyle(color: Colors.black),),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    final http.Response response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(<String, String>{
+        "nama": name,
+        "username": username,
+        "jenis_kelamin": gender,
+        "alamat": address,
+        "email": email,
+        "no_telp": phoneNumber,
+        "password": password
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      Navigator.of(context).pushNamedAndRemoveUntil(Login.id, (route) => false);
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Registration Failed'),
+          content: Text('Invalid response data.', style: TextStyle(color: Colors.black)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -39,6 +123,7 @@ class _SignupState extends State<Signup> {
                 const Divider(color: Colors.black, thickness: 2,),
                 SizedBox(height: size.height * 0.010),
                 TextField(
+                  controller: nameController,
                   style: const TextStyle(color: kLightTextColor),
                   decoration: InputDecoration(
                     hintText: "Nama Lengkap",
@@ -50,6 +135,7 @@ class _SignupState extends State<Signup> {
                 ),
                 SizedBox(height: size.height * 0.016),
                 TextField(
+                  controller: usernameController,
                   style: const TextStyle(color: kLightTextColor),
                   decoration: InputDecoration(
                     hintText: "Username",
@@ -61,6 +147,7 @@ class _SignupState extends State<Signup> {
                 ),
                 SizedBox(height: size.height * 0.016),
                 TextField(
+                  controller: emailController,
                   style: const TextStyle(color: kLightTextColor),
                   decoration: InputDecoration(
                     hintText: "Email",
@@ -72,6 +159,7 @@ class _SignupState extends State<Signup> {
                 ),
                 SizedBox(height: size.height * 0.016),
                 TextField(
+                  controller: phoneNumberController,
                   style: const TextStyle(color: kLightTextColor),
                   decoration: InputDecoration(
                     hintText: "Nomor Seluler",
@@ -83,6 +171,7 @@ class _SignupState extends State<Signup> {
                 ),
                 SizedBox(height: size.height * 0.016),
                 TextField(
+                  controller: passwordController,
                   obscureText: true,
                   style: const TextStyle(color: kLightTextColor),
                   decoration: InputDecoration(
@@ -95,6 +184,7 @@ class _SignupState extends State<Signup> {
                 ),
                 SizedBox(height: size.height * 0.016),
                 TextField(
+                  controller: confirmPasswordController,
                   obscureText: true,
                   style: const TextStyle(color: kLightTextColor),
                   decoration: InputDecoration(
@@ -107,6 +197,7 @@ class _SignupState extends State<Signup> {
                 ),
                 SizedBox(height: size.height * 0.016),
                 TextField(
+                  controller: addressController,
                   style: const TextStyle(color: kLightTextColor),
                   decoration: InputDecoration(
                     hintText: "Alamat",
@@ -174,8 +265,7 @@ class _SignupState extends State<Signup> {
                 SizedBox(height: size.height * 0.025),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                    Login.id, (route) => false);
+                    register();
                   },
                   child: Text(
                     "Sign Up",
