@@ -54,7 +54,7 @@ class _EditProfileState extends State<EditProfile> {
               Expanded(
                 child: ListView(
                   children: [
-                    buildTextField("Username", loggedInUser != null ? loggedInUser!.username : '', false, usernameController, enabled: false),
+                    buildTextField("Username", loggedInUser!.username, false, usernameController, enabled: false),
                     buildTextField("Email", "user@gmail.com", false, emailController, enabled: false),
                     buildTextField("Nomor Seluler", "088002280629", false, numberController, enabled: false),
                     buildTextField("Nama Lengkap", "", false, nameController, ),
