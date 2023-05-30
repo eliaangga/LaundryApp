@@ -1,6 +1,6 @@
 import '../login/login.dart';
 class User {
-  final int id;
+  final String id;
   final String name;
   final String username;
   final String gender;

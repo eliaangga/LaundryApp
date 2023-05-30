@@ -9,10 +9,9 @@ import '../user/User.dart';
 
 class LandingPage extends StatefulWidget {
   static String id = "/landingpage";
-  final String idUser;
-  final User? loggedInUser;
+  final User? userData;
 
-  const LandingPage({Key? key, this.loggedInUser, required this.idUser}) : super(key: key);
+  const LandingPage({Key? key, required this.userData}) : super(key: key);
   
   @override
   _LandingPageState createState() => _LandingPageState();
@@ -98,8 +97,12 @@ class _LandingPageState extends State<LandingPage> {
             ],
             onSelected: (value) {
               if (value == 4) {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(EditProfile.id, (route) => false);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LandingPage(userData: widget.userData),
+                  ),
+                );
               } else if (value == 5) {
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil(Login.id, (route) => false);
@@ -109,7 +112,7 @@ class _LandingPageState extends State<LandingPage> {
               mainAxisAlignment: MainAxisAlignment.end,
               children:  [
                 Text(
-                  widget.idUser,
+                  widget.userData!.username,
                   style: TextStyle(color: Colors.white),
                 ),
                 SizedBox(width: 8),

@@ -44,14 +44,23 @@ Future<void> login() async {
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
-      final String? username = data['user']['username'];
-      final String? id = data['user']['id'];
+      final dynamic user = data['user'];
 
-      if (id != null) {
+      if (user != null) {
+        final User userData = User(
+          id: user['id'],
+          name: user['nama'],
+          username: user['username'],
+          gender: user['jenis_kelamin'],
+          address: user['alamat'],
+          email: user['email'],
+          phoneNumber: user['no_telp'],
+          password: user['password'],
+        );
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => LandingPage(idUser: id),
+            builder: (context) => LandingPage(userData: userData),
           ),
         );
       } else {
