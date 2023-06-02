@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_login_signup/app_style.dart';
 import 'package:flutter_login_signup/pages/login/login.dart';
 import 'package:flutter_login_signup/pages/user/CreateOrder.dart';
 import 'package:flutter_login_signup/pages/user/TrackOrder.dart';
 import 'package:flutter_login_signup/pages/user/EditProfile.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
 
 import 'User.dart';
 
@@ -17,8 +21,44 @@ class HistoryOrder extends StatefulWidget {
 }
 
 class _HistoryOrderState extends State<HistoryOrder> {
+  List<Map<String, dynamic>> orderList = [];
+
   @override
-  Future<void> _showDetailDialog(BuildContext context) async {
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  Future<void> getData() async {
+    final String apiUrl = 'https://candycrushlaundry.000webhostapp.com/ApiCC/get_history_by_id?id='+ widget.userData!.id;
+
+    final http.Response response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> dataList = jsonDecode(response.body)['list_product'];
+      setState(() {
+        orderList = dataList.cast<Map<String, dynamic>>();
+      });
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Data Kosong'),
+          content: Text(''),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+
+  @override
+  Future<void> _showDetailDialog(BuildContext context, Map<String, dynamic> orderData) async {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -26,10 +66,13 @@ class _HistoryOrderState extends State<HistoryOrder> {
           title: const Text('Detail Pesanan'),
           content: SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
-                Text('Berat Laundry: 4 KG'),
-                Text('Banyak Sepatu: 1 Pasang'),
-                Text('Harga: Rp 50,000'),
+              children: <Widget>[
+                Text('Paket Laundry: ${orderData['paket_laundry']}', style: TextStyle(color: Colors.black),),
+                Text('Berat Laundry: ${orderData['berat_laundry']}', style: TextStyle(color: Colors.black)),
+                Text('Paket Sepatu: ${orderData['paket_sepatu']}', style: TextStyle(color: Colors.black)),
+                Text('Banyak Sepatu: ${orderData['banyak_sepatu']}', style: TextStyle(color: Colors.black)),
+                Text('Alamat Pesanan: ${orderData['alamat_pesanan']}', style: TextStyle(color: Colors.black)),
+                Text('Total Harga: Rp ${orderData['total_harga']}', style: TextStyle(color: Colors.black)),
               ],
             ),
           ),
@@ -52,19 +95,16 @@ class _HistoryOrderState extends State<HistoryOrder> {
       appBar: AppBar(
         backgroundColor: Color(0xFFFF6464),
         centerTitle: true,
-        title: Image.asset(
-          logoImage2,
-          width: 170,
-        ),
+        title: Image.asset(logoImage2, width: 170),
         leading: PopupMenuButton(
             onSelected: (result) {
               if (result == 1) {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CreateOrder(userData: widget.userData),
-                  ),
-                );
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CreateOrder(userData: widget.userData),
+                ),
+              );
               } else if (result == 2) {
                 Navigator.push(
                   context,
@@ -153,12 +193,12 @@ class _HistoryOrderState extends State<HistoryOrder> {
           columns: [
             DataColumn(
               label: Text(
-                'Berat Laundry',
+                'Tanggal Selesai',
               ),
             ),
             DataColumn(
               label: Text(
-                'Banyak Sepatu',
+                'Harga',
               ),
             ),
             DataColumn(
@@ -167,22 +207,38 @@ class _HistoryOrderState extends State<HistoryOrder> {
               ),
             ),
           ],
-          rows: [
-            DataRow(
+          rows: orderList.map((orderData) {
+            return DataRow(
               cells: [
-                DataCell(Text('4 KG')),
-                DataCell(Text('1 Pasang')),
+                DataCell(
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.2,
+                    child: Text(
+                      orderData['estimasi'],
+                      style: TextStyle(fontSize: 9, color: Colors.black),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.2,
+                    child: Text(
+                      "Rp "+orderData['total_harga'],
+                      style: TextStyle(fontSize: 9),
+                    ),
+                  ),
+                ),
                 DataCell(
                   GestureDetector(
                     onTap: () {
-                      _showDetailDialog(context);
+                      _showDetailDialog(context, orderData);
                     },
-                    child: Text('Done'),
+                    child: SvgPicture.asset(infoIcon, width: 20),
                   ),
                 ),
               ],
-            ),
-          ],
+            );
+          }).toList(),
         ),
       ),
     );
