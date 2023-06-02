@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_signup/pages/login/login.dart';
@@ -6,6 +8,8 @@ import 'package:flutter_login_signup/pages/user/EditProfile.dart';
 import 'package:flutter_login_signup/pages/user/CreateOrder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../app_style.dart';
+import 'package:http/http.dart' as http;
+
 import 'User.dart';
 
 class TrackOrder extends StatefulWidget {
@@ -19,8 +23,44 @@ class TrackOrder extends StatefulWidget {
 }
 
 class _TrackOrderState extends State<TrackOrder> {
+  List<Map<String, dynamic>> orderList = [];
+
   @override
-  Future<void> _showDetailDialog(BuildContext context) async {
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  Future<void> getData() async {
+    final String apiUrl = 'https://candycrushlaundry.000webhostapp.com/ApiCC/get_by_id?id='+ widget.userData!.id;
+
+    final http.Response response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> dataList = jsonDecode(response.body)['list_product'];
+      setState(() {
+        orderList = dataList.cast<Map<String, dynamic>>();
+      });
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Get Data Failed'),
+          content: Text(''),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+
+  @override
+  Future<void> _showDetailDialog(BuildContext context, Map<String, dynamic> orderData) async {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -28,10 +68,13 @@ class _TrackOrderState extends State<TrackOrder> {
           title: const Text('Detail Pesanan'),
           content: SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
-                Text('Berat Laundry: 4 KG'),
-                Text('Banyak Sepatu: 1 Pasang'),
-                Text('Harga: Rp 50,000'),
+              children: <Widget>[
+                Text('Paket Laundry: ${orderData['paket_laundry']}', style: TextStyle(color: Colors.black),),
+                Text('Berat Laundry: ${orderData['berat_laundry']}', style: TextStyle(color: Colors.black)),
+                Text('Paket Sepatu: ${orderData['paket_sepatu']}', style: TextStyle(color: Colors.black)),
+                Text('Banyak Sepatu: ${orderData['banyak_sepatu']}', style: TextStyle(color: Colors.black)),
+                Text('Alamat Pesanan: ${orderData['alamat_pesanan']}', style: TextStyle(color: Colors.black)),
+                Text('Total Harga: Rp ${orderData['total_harga']}', style: TextStyle(color: Colors.black)),
               ],
             ),
           ),
@@ -166,60 +209,38 @@ class _TrackOrderState extends State<TrackOrder> {
               ),
             ),
           ],
-          rows: [
-            DataRow(
+          rows: orderList.map((orderData) {
+            return DataRow(
               cells: [
                 DataCell(
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.2, // Atur lebar maksimal 30% dari lebar layar
-                    child: Text('Pesanan diterima', style: TextStyle(fontSize: 9),),
+                    width: MediaQuery.of(context).size.width * 0.2,
+                    child: Text(
+                      orderData['status'],
+                      style: TextStyle(fontSize: 9, color: Colors.black),
+                    ),
                   ),
                 ),
                 DataCell(
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.2, // Atur lebar maksimal 30% dari lebar layar
-                    child: Text('05-01-2023 01:12:24', style: TextStyle(fontSize: 9),),
+                    width: MediaQuery.of(context).size.width * 0.2,
+                    child: Text(
+                      orderData['estimasi'],
+                      style: TextStyle(fontSize: 9),
+                    ),
                   ),
                 ),
                 DataCell(
                   GestureDetector(
                     onTap: () {
-                      _showDetailDialog(context);
+                      _showDetailDialog(context, orderData);
                     },
                     child: SvgPicture.asset(infoIcon, width: 20),
                   ),
                 ),
               ],
-            ),
-            DataRow(
-              cells: [
-                DataCell(Text('6 KG')),
-                DataCell(Text('2 Pasang')),
-                DataCell(
-                  GestureDetector(
-                    onTap: () {
-                      _showDetailDialog(context);
-                    },
-                    child: SvgPicture.asset(infoIcon, width: 25),
-                  ),
-                ),
-              ],
-            ),
-            DataRow(
-              cells: [
-                DataCell(Text('8 KG')),
-                DataCell(Text('3 Pasang')),
-                DataCell(
-                  GestureDetector(
-                    onTap: () {
-                      _showDetailDialog(context);
-                    },
-                    child: SvgPicture.asset(infoIcon, width: 25),
-                  ),
-                ),
-              ],
-            ),
-          ],
+            );
+          }).toList(),
         ),
       ),
     );
