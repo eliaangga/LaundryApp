@@ -152,12 +152,12 @@ class _TrackOrderState extends State<TrackOrder> {
           columns: [
             DataColumn(
               label: Text(
-                'Berat Laundry',
+                'Status',
               ),
             ),
             DataColumn(
               label: Text(
-                'Banyak Sepatu',
+                'Estimasi',
               ),
             ),
             DataColumn(
@@ -169,14 +169,24 @@ class _TrackOrderState extends State<TrackOrder> {
           rows: [
             DataRow(
               cells: [
-                DataCell(Text('4 KG')),
-                DataCell(Text('1 Pasang')),
+                DataCell(
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.2, // Atur lebar maksimal 30% dari lebar layar
+                    child: Text('Pesanan diterima', style: TextStyle(fontSize: 9),),
+                  ),
+                ),
+                DataCell(
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.2, // Atur lebar maksimal 30% dari lebar layar
+                    child: Text('05-01-2023 01:12:24', style: TextStyle(fontSize: 9),),
+                  ),
+                ),
                 DataCell(
                   GestureDetector(
                     onTap: () {
                       _showDetailDialog(context);
                     },
-                    child: SvgPicture.asset(infoIcon, width: 25),
+                    child: SvgPicture.asset(infoIcon, width: 20),
                   ),
                 ),
               ],
