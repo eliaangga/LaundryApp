@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_login_signup/pages/landingpage/landingpage.dart';
 import 'CreateOrder.dart';
 import '../user/User.dart';
+import 'package:http/http.dart' as http;
 
 class EditProfile extends StatefulWidget {
   static const String id = "/editprofile";
@@ -27,6 +30,48 @@ class _EditProfileState extends State<EditProfile> {
   bool isObscurePassword = true;
   bool isObscureConfirmPassword = true;
   
+
+  Future<void> updateData() async {
+    String url = 'https://candycrushlaundry.000webhostapp.com/ApiCC/update';
+    http.Response response = await http.post(
+      Uri.parse(url),
+      body: jsonEncode(<String, String>{
+        "id": widget.userData!.id,
+        "nama": nameController.text,
+        "username": usernameController.text,
+        "jenis_kelamin": widget.userData!.gender,
+        "alamat": addressController.text,
+        "email": emailController.text,
+        "no_telp": numberController.text,
+        "password": passwordController.text
+      }),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+      if (response.statusCode == 200) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LandingPage(userData: widget.userData),
+          ),
+        );
+      } else {
+        showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Updating data Failed'),
+          content: Text('Invalid response data.', style: TextStyle(color: Colors.black)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+      }
+    }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,8 +158,12 @@ class _EditProfileState extends State<EditProfile> {
                 children: [
                   OutlinedButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                      CreateOrder.id, (route) => false);        
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LandingPage(userData: widget.userData),
+                        ),
+                      );       
                     },
                     child: const Text(
                       "Cancel",
@@ -134,7 +183,14 @@ class _EditProfileState extends State<EditProfile> {
                     width: 150,
                     height: 35,
                     child: ElevatedButton(
-                      onPressed: (){},
+                      onPressed: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LandingPage(userData: widget.userData),
+                          ),
+                        );
+                      },
                       child: Text("Save", style: TextStyle(
                         fontSize: 12,
                         letterSpacing: 2,
