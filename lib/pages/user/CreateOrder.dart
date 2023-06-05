@@ -8,6 +8,7 @@ import 'package:flutter_login_signup/pages/user/TrackOrder.dart';
 import '../../app_style.dart';
 import 'package:http/http.dart' as http;
 
+import '../landingpage/landingpage.dart';
 import 'User.dart';
 
 class CreateOrder extends StatefulWidget {
@@ -52,7 +53,12 @@ class _CreateOrderState extends State<CreateOrder> {
     );
 
     if (response.statusCode == 200) {
-      Navigator.of(context).pushNamedAndRemoveUntil(TrackOrder.id, (route) => false);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LandingPage(userData: widget.userData),
+          ),
+        );
     } else {
       showDialog(
         context: context,
