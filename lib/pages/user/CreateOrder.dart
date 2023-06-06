@@ -188,6 +188,7 @@ class _CreateOrderState extends State<CreateOrder> {
         ],
       ),
       body: Container(
+        color: Color(0xFFF5EDDC),
         margin: const EdgeInsets.all(16),
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
@@ -220,12 +221,24 @@ class _CreateOrderState extends State<CreateOrder> {
                             ),
                           ),
                           SizedBox(height: 8),
-                          Text("1. Pilih alamat pengambilan Laundry"),
-                          Text("2. Pilih Jenis paket Laundry yang diinginkan"),
-                          Text("3. Tekan Pesan jika pesanan sudah sesuai yang diinginkan"),
-                          Text("4. Tunggu 15-30 Menit, dan Kurir akan datang ketempatmu"),
-                          Text("5. Cek Status Orderan pada lacak pesanan"),
-                          Text("6. Hubungi nomor 087349762384 jika ada yang ingin ditanyakan atau komplain"),
+                          Text("1. Pilih alamat pengambilan Laundry",
+                          style: TextStyle(fontSize: 13),
+                          ),
+                          Text("2. Pilih Jenis paket Laundry yang diinginkan",
+                          style: TextStyle(fontSize: 13),
+                          ),
+                          Text("3. Tekan Pesan jika pesanan sudah sesuai yang diinginkan",
+                          style: TextStyle(fontSize: 13),
+                          ),
+                          Text("4. Tunggu 15-30 Menit, dan Kurir akan datang ketempatmu",
+                          style: TextStyle(fontSize: 13),
+                          ),
+                          Text("5. Cek Status Orderan pada lacak pesanan",
+                          style: TextStyle(fontSize: 13),
+                          ),
+                          Text("6. Hubungi nomor 087349762384 jika ada yang ingin ditanyakan atau komplain",
+                          style: TextStyle(fontSize: 13),
+                          ),
                           SizedBox(height: 30),
                         ],
                       ),
@@ -242,13 +255,16 @@ class _CreateOrderState extends State<CreateOrder> {
                       'Alamat',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
+                        fontSize: 14,
                       ),
                     ),
                     SizedBox(height: 8),
                     TextFormField(
+                      style: TextStyle(color: Colors.red),
                       decoration: InputDecoration(
                         hintText: 'Masukkan alamat Anda',
                         border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0), // Menyesuaikan padding konten
                       ),
                     ),
                     SizedBox(height: 16),
@@ -266,9 +282,13 @@ class _CreateOrderState extends State<CreateOrder> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: DropdownButtonFormField<String>(
+                              style: TextStyle(fontSize: 10),
                               decoration: const InputDecoration(
                                 hintText: 'Paket Pakaian',
+                                hintStyle: TextStyle(fontSize: 15),
                                 border: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(vertical: 13.0, horizontal: 5.0),
+                                isDense: true,
                               ),
                               items: <String>[
                                 'None',
@@ -280,7 +300,8 @@ class _CreateOrderState extends State<CreateOrder> {
                                   value: value,
                                   child: Text(
                                     value,
-                                    style: TextStyle(color: Color(0xFFFF6464)),
+                                    style: TextStyle(color: Color(0xFFFF6464),
+                                    fontSize: 15),
                                   ),
                                 );
                               }).toList(),
@@ -294,9 +315,13 @@ class _CreateOrderState extends State<CreateOrder> {
                           const SizedBox(width: 16),
                           Expanded(
                             child: DropdownButtonFormField<String>(
+                              style: TextStyle(fontSize: 10),
                               decoration: const InputDecoration(
                                 hintText: 'Paket Sepatu',
+                                hintStyle: TextStyle(fontSize: 15),
                                 border: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(vertical: 13.0, horizontal: 5.0),
+                                isDense: true,
                               ),
                               items: <String>[
                                 'None',
@@ -308,7 +333,9 @@ class _CreateOrderState extends State<CreateOrder> {
                                   value: value,
                                   child: Text(
                                     value,
-                                    style: TextStyle(color: Color(0xFFFF6464)),
+                                    style: TextStyle(color: Color(0xFFFF6464),
+                                    fontSize: 15,
+                                    ),
                                   ),
                                 );
                               }).toList(),
@@ -319,12 +346,14 @@ class _CreateOrderState extends State<CreateOrder> {
                               },
                             ),
                           ),
+                          const SizedBox(width: 12),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
+              SizedBox(height: 10),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
