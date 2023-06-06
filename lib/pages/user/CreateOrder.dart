@@ -188,7 +188,6 @@ class _CreateOrderState extends State<CreateOrder> {
         ],
       ),
       body: Container(
-        color: Color(0xFFF5EDDC),
         margin: const EdgeInsets.all(16),
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
