@@ -57,22 +57,27 @@ class _HistoryOrderState extends State<HistoryOrder> {
   }
 
 
-  @override
   Future<void> _showDetailDialog(BuildContext context, Map<String, dynamic> orderData) async {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Detail Pesanan'),
+          title: const Text('Detail Pesanan',
+          style: TextStyle(
+            fontSize: 20,
+          ),
+          ),
+          
+          
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Paket Laundry: ${orderData['paket_laundry']}', style: TextStyle(color: Colors.black),),
-                Text('Berat Laundry: ${orderData['berat_laundry']}', style: TextStyle(color: Colors.black)),
-                Text('Paket Sepatu: ${orderData['paket_sepatu']}', style: TextStyle(color: Colors.black)),
-                Text('Banyak Sepatu: ${orderData['banyak_sepatu']}', style: TextStyle(color: Colors.black)),
-                Text('Alamat Pesanan: ${orderData['alamat_pesanan']}', style: TextStyle(color: Colors.black)),
-                Text('Total Harga: Rp ${orderData['total_harga']}', style: TextStyle(color: Colors.black)),
+                Text('Paket Laundry: ${orderData['paket_laundry']}', style: TextStyle(color: Colors.black, fontSize: 12)),
+                Text('Berat Laundry: ${orderData['berat_laundry']}', style: TextStyle(color: Colors.black, fontSize: 12)),
+                Text('Paket Sepatu: ${orderData['paket_sepatu']}', style: TextStyle(color: Colors.black, fontSize: 12)),
+                Text('Banyak Sepatu: ${orderData['banyak_sepatu']}', style: TextStyle(color: Colors.black, fontSize: 12)),
+                Text('Alamat Pesanan: ${orderData['alamat_pesanan']}', style: TextStyle(color: Colors.black, fontSize: 12)),
+                Text('Total Harga: Rp ${orderData['total_harga']}', style: TextStyle(color: Colors.black, fontSize: 12)),
               ],
             ),
           ),
