@@ -1,4 +1,4 @@
-# LaundryApp - Project By CandyCrush
+# LaundryApp - Aplication By CandyCrush
 # Author 
 - [Elia Angga](https://github.com/eliaangga)
 - [Luthfi Siregar](https://github.com/luthfi55)
